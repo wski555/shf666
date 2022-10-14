@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.atguigu.dao.AdminRoleDao">
+    <select id="findRolesByAdminId" resultType="long">
+        select role_id
+        from db_house.acl_admin_role
+        where admin_id = #{id} and is_deleted = 0
+    </select>
+    <delete id="deleteByAdminId">
+        update db_house.acl_admin_role set is_deleted = 1, update_time = now()
+        where admin_id = #{adminId}
+    </delete>
+    <insert id="insertBatch">
+        insert into db_house.acl_admin_role(role_id, admin_id)
+        values <foreach collection="adminRoleList" index="index" item="item" separator=",">
+        (#{item.roleId},#{item.adminId})
+    </foreach>
+    </insert>
+</mapper>

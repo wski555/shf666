@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.atguigu.dao.PermissionDao">
+    <select id="findAll" resultType="permission">
+        select id, parent_id, name, url, code, type, sort, create_time, update_time, is_deleted
+        from db_house.acl_permission where is_deleted = 0
+        order by sort
+    </select>
+    <select id="findListByAdminId" resultType="permission">
+        select p.*
+        from db_house.acl_role_permission rp
+        inner join  db_house.acl_admin_role ar
+        on  rp.role_id = ar.role_id
+        inner join db_house.acl_permission p
+        on rp.permission_id = p.id
+        where ar.admin_id = #{adminId}
+        and rp.is_deleted = 0
+        and ar.is_deleted = 0
+        and  p.is_deleted = 0
+        and p.type = 1
+
+    </select>
+    <select id="findCodeListByAdminId" resultType="string">
+        select distinct ap.code
+        from db_house.acl_admin_role ac left join
+        db_house.acl_role_permission rp on ac.role_id = rp.role_id
+        left join db_house.acl_permission ap on rp.permission_id = ap.id
+        where admin_id = #{adminId}
+        and ap.type = 2
+        and ac.is_deleted = 0
+        and rp.is_deleted = 0
+        and ap.is_deleted = 0
+    </select>
+    <select id="findAllCodeList" resultType="string">
+        select code
+        from acl_permission
+        where type =2
+        and is_deleted = 0
+    </select>
+</mapper>
